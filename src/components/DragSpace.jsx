@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Controls,
   Background,
@@ -25,6 +25,7 @@ const nodeTypes = {
 const DragSpace = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [lastNodeType, setLastNodeType] = useState(null); // Track the last node type
 
   const isValidConnection = (connection) => {
     const { source, target } = connection;
@@ -32,7 +33,7 @@ const DragSpace = () => {
     const sourceNode = nodes.find((node) => node.id === source);
     const targetNode = nodes.find((node) => node.id === target);
 
-    if (!sourceNode || !targetNode) return false; // Ensure both nodes exist else error aega
+    if (!sourceNode || !targetNode) return false;
 
     if (sourceNode.type === 'input' && targetNode.type === 'llm') {
       return true;
@@ -60,7 +61,7 @@ const DragSpace = () => {
         console.warn('Invalid connection attempt:', params);
       }
     },
-    [setEdges, nodes] // Include nodes in the dependency array
+    [setEdges, nodes]
   );
 
   const [, drop] = useDrop({
@@ -85,22 +86,45 @@ const DragSpace = () => {
         edges: [],
       };
 
+      let newNodeType;
+
       if (item.componentType === 'Input') {
+        newNodeType = 'input';
         setNodes((nds) => [
           ...nds,
-          { ...newNode, data: { label: 'Input Node' }, type: 'input' },
+          { ...newNode, data: { label: 'Input Node' }, type: newNodeType },
         ]);
       } else if (item.componentType === 'LLM') {
+        newNodeType = 'llm';
         setNodes((nds) => [
           ...nds,
-          { ...newNode, data: { label: 'LLM Node' }, type: 'llm' },
+          { ...newNode, data: { label: 'LLM Node' }, type: newNodeType },
         ]);
       } else if (item.componentType === 'Output') {
+        newNodeType = 'output';
         setNodes((nds) => [
           ...nds,
-          { ...newNode, data: { label: 'Output Node' }, type: 'output' },
+          { ...newNode, data: { label: 'Output Node' }, type: newNodeType },
         ]);
       }
+
+      // Automatically connect nodes based on the last node type
+      if (lastNodeType === 'input' && newNodeType === 'llm') {
+        const edge = {
+          source: `${nodes.length}`,
+          target: `${nodes.length + 1}`,
+        }; // Adjust based on current node count
+        onConnect(edge);
+      } else if (lastNodeType === 'llm' && newNodeType === 'output') {
+        const edge = {
+          source: `${nodes.length}`,
+          target: `${nodes.length + 1}`,
+        }; // Adjust based on current node count
+        onConnect(edge);
+      }
+
+      // Update the last node type
+      setLastNodeType(newNodeType);
     },
   });
 
@@ -114,10 +138,20 @@ const DragSpace = () => {
         draggable
         nodesDraggable
         nodesConnectable
-        nodeTypes={nodeTypes} // Use custom node types
+        nodeTypes={nodeTypes}
       >
-        <div className='flex flex-row'>
+        <div className='flex flex-row w-full h-full'>
           <ComponentBar />
+          {nodes.length === 0 && (
+            <div className='w-full h-full flex flex-col gap-1  items-center justify-center text-center font-medium text-lg'>
+              <img
+                src='none_icon.svg'
+                alt='Drag and Drop'
+                className='rounded-full bg-[#DEFBEA] p-2 flex items-center justify-center'
+              />
+              Drag and Drop nodes
+            </div>
+          )}
           <Controls className='mr-10 bg-green-600 ' position='bottom-right' />
         </div>
         <Background variant='dots' gap={12} size={1} />
