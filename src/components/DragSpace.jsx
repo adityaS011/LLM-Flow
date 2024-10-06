@@ -142,6 +142,14 @@ const DragSpace = () => {
       >
         <div className='flex flex-row w-full h-full'>
           <ComponentBar />
+          <Controls
+            position='bottom-left'
+            style={{
+              borderRadius: '8px',
+              marginLeft: '280px',
+            }}
+          />
+
           {nodes.length === 0 && (
             <div className='w-full h-full flex flex-col gap-1  items-center justify-center text-center font-medium text-lg'>
               <img
@@ -149,10 +157,9 @@ const DragSpace = () => {
                 alt='Drag and Drop'
                 className='rounded-full bg-[#DEFBEA] p-2 flex items-center justify-center'
               />
-              Drag and Drop nodes
+              Drag and drop to get started
             </div>
           )}
-          <Controls className='mr-10 bg-green-600 ' position='bottom-right' />
         </div>
         <Background variant='dots' gap={12} size={1} />
       </ReactFlow>

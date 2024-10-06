@@ -52,7 +52,7 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
   return (
     <div className='h-fit w-full bg-white justify-between items-center flex flex-row py-2 px-10 border shadow-sm z-50'>
       <p>Open GI</p>
-      <div className='flex flex-row justify-end gap-6'>
+      <div className='flex flex-row justify-end gap-5'>
         {isDeployed && output && !isError && (
           <button
             onClick={handleChatDeploy}
@@ -75,7 +75,7 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
                 onClick={handleDeploy}
                 disabled={!output}
                 className={`rounded-lg bg-black  text-white w-[95px] px-2 py-1 ${
-                  !output ? 'opacity-30 text-gray-300' : ''
+                  !output ? 'opacity-30 ' : ''
                 }`}
               >
                 Deploy
@@ -102,7 +102,7 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
                 ${
                   openAiBase && openAiKey && input && model && temperature
                     ? ''
-                    : 'opacity-70'
+                    : 'opacity-30'
                 }
                 `}
             >
