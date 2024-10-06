@@ -95,6 +95,9 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
           <div className='relative group'>
             <button
               onClick={handleRun}
+              disabled={
+                !openAiBase && !openAiKey && !input && !model && !temperature
+              }
               className={`bg-[#44924C] text-white rounded-lg w-[95px] px-2 py-1 gap-1 flex flex-row items-center justify-center
                 ${
                   openAiBase && openAiKey && input && model && temperature
@@ -108,14 +111,7 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
             </button>
             <span
               className={`absolute left-1/2 transform -translate-x-1/2 mt-2 p-4 rounded-md w-32 bg-black text-white text-xs  px-2 py-1 ${
-                !output &&
-                openAiBase &&
-                openAiKey &&
-                input &&
-                model &&
-                temperature
-                  ? 'invisible group-hover:visible'
-                  : 'invisible'
+                !output ? 'invisible group-hover:visible' : 'invisible'
               }`}
             >
               Please Create the flow to run
