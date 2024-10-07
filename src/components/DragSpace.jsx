@@ -147,6 +147,7 @@ const DragSpace = () => {
             style={{
               borderRadius: '8px',
               marginLeft: '280px',
+              marginBottom: '25px',
             }}
           />
 

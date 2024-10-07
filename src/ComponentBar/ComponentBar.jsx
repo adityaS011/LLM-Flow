@@ -27,14 +27,12 @@ const ComponentBar = () => {
   });
 
   return (
-    <div className='flex flex-col gap-4 bg-white z-50 h-[640px] ml-7 mt-5 w-[251px] p-4 rounded-[20px] border shadow-sm'>
+    <div className='flex flex-col gap-4 bg-white z-50 h-[640px] ml-7 mt-5 w-[251px] p-4 rounded-[20px] border shadow-lg'>
       <p className='flex flex-col font-medium text-lg gap-3'>
         Components
         <div className='h-[1px] bg-gray-300'></div>
       </p>
-      <p className='text-[#444444] font-normal text-sm tracking-tight'>
-        Drag n Drop
-      </p>
+      <p className='text-gray-400  font-medium text-sm '>Drag and Drop</p>
       <div
         ref={dragInput}
         className={`cursor-pointer node-item flex flex-row items-center border-[0.8px] rounded-[5px] justify-between w-full p-2 ${
@@ -71,6 +69,10 @@ const ComponentBar = () => {
         </div>
         <img src='vector.svg' alt='options' className='w-[10px] h-[7px]' />
       </div>
+      <p className='text-sm mt-auto text-gray-800 font-medium text-center  bg-green-300 p-2 rounded-lg'>
+        Drag all nodes and connect them. <br />
+        <p className='text-red-600 '>Input--LLM--Output</p>
+      </p>
     </div>
   );
 };
