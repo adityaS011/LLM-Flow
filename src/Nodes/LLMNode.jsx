@@ -18,8 +18,9 @@ const LLMNode = () => {
 
   const modelOptions = [
     { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
-    { value: 'gpt-4o-mini', label: 'GPT-4' },
-    { value: 'text-davinci-003', label: 'Text Davinci 003' },
+    { value: 'gpt-4o-mini', label: 'GPT-4 -o -mini' },
+    { value: 'gpt-4o', label: 'GPT-4' },
+    { value: 'gpt-4-turbo', label: 'GPT 4 Turbo' },
   ];
 
   return (

@@ -31,9 +31,17 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        setOutput('Error: ' + errorData.message);
+        setIsError(true);
+        return;
+      }
+
       const data = await response.json();
       console.log(data);
-      setOutput(data.choices[0].text);
+      setOutput(data.choices[0]?.text || 'No output');
     } catch (error) {
       setOutput('Error in fetching data from API');
       setIsError(true);
