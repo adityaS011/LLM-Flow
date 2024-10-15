@@ -60,6 +60,10 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
       isDeployed ? 'Undeployed successfully!' : 'Deployed successfully!'
     );
   };
+  const handleUndeploy = () => {
+    setIsChatDeployed((prevState) => !prevState);
+    setIsDeployed((prevState) => !prevState);
+  };
 
   const handleChatDeploy = () => {
     setIsChatDeployed((prevState) => !prevState);
@@ -79,7 +83,7 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
         )}
         {isDeployed && output ? (
           <button
-            onClick={handleDeploy}
+            onClick={handleUndeploy}
             className='rounded-lg bg-white text-red-400 font-medium border-red-300 border w-[95px] px-2 py-1'
           >
             Undeploy
