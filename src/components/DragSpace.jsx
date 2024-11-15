@@ -25,7 +25,7 @@ const nodeTypes = {
 const DragSpace = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [lastNodeType, setLastNodeType] = useState(null); // Track the last node type
+  const [lastNodeType, setLastNodeType] = useState(null);
 
   const isValidConnection = (connection) => {
     const { source, target } = connection;

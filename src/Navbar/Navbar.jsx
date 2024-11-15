@@ -18,19 +18,22 @@ const Navbar = ({ isChatDeployed, setIsChatDeployed }) => {
 
   const handleRun = async () => {
     try {
-      const response = await fetch(`${openAiBase}/v1/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${openAiKey}`,
-        },
-        body: JSON.stringify({
-          model,
-          prompt: input,
-          max_tokens: parseInt(maxTokens),
-          temperature: parseFloat(temperature),
-        }),
-      });
+      const response = await fetch(
+        `https://api.openai.com/v1/chat/completions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${openAiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: 'user', content: input }],
+            max_tokens: parseInt(maxTokens),
+            temperature: parseFloat(temperature),
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

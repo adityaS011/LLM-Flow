@@ -7,42 +7,46 @@ const ChatInterface = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSendMessage = async () => {
     if (!userInput.trim()) return; // Prevent empty messages
 
     const newMessage = { role: 'user', content: userInput };
     setChatHistory((prev) => [...prev, newMessage]);
-
     setUserInput('');
     setIsLoading(true);
+    setError(null); // Reset error state
 
     try {
-      const response = await fetch(`${openAiBase}/v1/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${openAiKey}`,
-        },
-        body: JSON.stringify({
-          model,
-          prompt: userInput,
-          max_tokens: parseInt(maxTokens),
-          temperature: parseFloat(temperature),
-        }),
-      });
+      const response = await fetch(
+        `https://api.openai.com/v1/chat/completions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${openAiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: [newMessage],
+            max_tokens: parseInt(maxTokens),
+            temperature: parseFloat(temperature),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch from API');
+      }
 
       const data = await response.json();
-      const aiMessage = { role: 'assistant', content: data.choices[0].text };
-
+      const aiMessage = { role: 'assistant', content: data.choices[0].message };
+      console.log(data);
       setChatHistory((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error in fetching data from API', error);
-      const errorMessage = {
-        role: 'system',
-        content: 'Error in fetching response',
-      };
-      setChatHistory((prev) => [...prev, errorMessage]);
+      setError('Error in fetching response. Please try again.');
     }
 
     setIsLoading(false);
@@ -50,6 +54,7 @@ const ChatInterface = () => {
 
   const handleNewConversation = () => {
     setChatHistory([]);
+    setError(null); // Reset error when starting new conversation
   };
 
   return (
@@ -57,7 +62,7 @@ const ChatInterface = () => {
       <div className='flex flex-col bg-[#FAFAFB] p-4 w-[280px] gap-4 shadow-md'>
         <button
           onClick={handleNewConversation}
-          className='border border-black w-[248px] text-gray-800 font-normal rounded-lg text-sm mt-4 px-4 py-2 mb-6 '
+          className='border border-black w-[248px] text-gray-800 font-normal rounded-lg text-sm mt-4 px-4 py-2 mb-6'
         >
           + Start New Conversation
         </button>
@@ -73,7 +78,7 @@ const ChatInterface = () => {
                 message.role === 'user' ? 'text-right' : 'text-left'
               }`}
             >
-              <p
+              <div
                 className={`inline-block px-4 py-2 rounded-lg ${
                   message.role === 'user'
                     ? 'bg-white text-black'
@@ -81,16 +86,17 @@ const ChatInterface = () => {
                 }`}
               >
                 {message.content}
-              </p>
+              </div>
             </div>
           ))}
-          {isLoading && <p className='text-center'>Loading...</p>}
+          {isLoading && <div className='text-center'>Loading...</div>}
+          {error && <div className='text-red-500 text-center'>{error}</div>}
         </div>
 
         <div className='flex p-4 bg-white border rounded-l w-[838px] mx-auto'>
           <input
             type='text'
-            className='flex-grow p-2 '
+            className='flex-grow p-2'
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             placeholder='Type your message...'
